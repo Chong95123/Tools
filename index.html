@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renovation Tools</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <!-- Menu -->
+    <nav class="main-menu">
+      <button class="menu-btn active" data-target="calculator">Calculator</button>
+      <button class="menu-btn" data-target="checklist">Layout Checklist</button>
+      <button class="menu-btn" data-target="loan">Loan Calculator</button>
+      <button class="menu-btn" data-target="rental">Rental Yield</button>
+    </nav>
+
+    <!-- ==================== CALCULATOR ==================== -->
+    <div id="calculator" class="section active">
+      <header>
+        <h1>Renovation Cost Calculator</h1>
+        <p class="subtitle">Pre-site visit estimate • Prices in RM</p>
+      </header>
+
+      <section class="card">
+        <h2>1. Property Details</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Property Type</label>
+            <select id="propertyType">
+              <option value="apartment-new">Apartment / Flat (New)</option>
+              <option value="apartment-resale" selected>Apartment / Flat (Resale)</option>
+              <option value="condo-new">Condo (New)</option>
+              <option value="condo-resale">Condo (Resale)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Floor Area</label>
+            <div class="size-input-group">
+              <input type="number" id="floorArea" value="1000" min="300" max="5000" step="10">
+              <select id="areaUnit">
+                <option value="sqft" selected>sqft</option>
+                <option value="sqm">sqm</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Bedrooms</label>
+            <select id="bedrooms">
+              <option value="1">1 Bedroom</option>
+              <option value="2">2 Bedrooms</option>
+              <option value="3" selected>3 Bedrooms</option>
+              <option value="4">4 Bedrooms</option>
+              <option value="5">5+ Bedrooms</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Bathrooms</label>
+            <select id="bathrooms">
+              <option value="1">1 Bathroom</option>
+              <option value="2" selected>2 Bathrooms</option>
+              <option value="3">3 Bathrooms</option>
+              <option value="4">4+ Bathrooms</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. Select Work Scope</h2>
+        <p class="hint">Choose the intensity. Description will appear below after you select.</p>
+        <div class="categories" id="categories"></div>
+      </section>
+
+      <div class="action-bar">
+        <button id="calculateBtn" class="btn-primary">Calculate Estimate (RM)</button>
+      </div>
+
+      <section class="card result-card" id="resultSection" style="display: none;">
+        <h2>Your Estimated Renovation Cost</h2>
+        <div class="total-range">
+          <div class="range-box">
+            <span class="label">Estimated Range (RM)</span>
+            <span class="amount" id="totalRange">RM 0 – RM 0</span>
+          </div>
+          <p class="area-info" id="areaInfo"></p>
+        </div>
+        <div class="breakdown">
+          <h3>Cost Breakdown</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Intensity</th>
+                <th>Estimated Cost (RM)</th>
+              </tr>
+            </thead>
+            <tbody id="breakdownBody"></tbody>
+          </table>
+        </div>
+        <div class="notes">
+          <h3>What's Usually Included</h3>
+          <ul>
+            <li>Labour + standard materials for the selected level</li>
+            <li>Basic debris disposal</li>
+            <li>Standard hardware</li>
+          </ul>
+          <h3>What's Usually Not Included</h3>
+          <ul>
+            <li>Appliances, lighting, sanitary ware</li>
+            <li>Design / ID fees</li>
+            <li>Permit fees & deposits</li>
+            <li>Common area / facilities works</li>
+          </ul>
+          <div class="disclaimer">
+            <strong>Disclaimer:</strong> This is a pre-site visit estimate only. Final quotation may differ by 15–30%.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== CHECKLIST ==================== -->
+    <div id="checklist" class="section">
+      <header>
+        <h1>Layout Checklist</h1>
+        <p class="subtitle">Upload floor plan → mark areas → track progress (auto-saved)</p>
+      </header>
+
+      <section class="card">
+        <h2>1. Upload Floor Plan</h2>
+        <input type="file" id="planUpload" accept="image/*">
+        <p class="hint" style="margin-top:10px;">Click on the plan to place a marker</p>
+      </section>
+
+      <section class="card">
+        <div class="plan-wrapper">
+          <div id="planContainer">
+            <img id="planImage" src="" alt="Floor Plan" style="display:none;">
+            <div id="markers"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. Add Checklist Item</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Area</label>
+            <select id="itemArea">
+              <option value="Living">Living</option>
+              <option value="Kitchen">Kitchen</option>
+              <option value="Bedroom">Bedroom</option>
+              <option value="Bathroom">Bathroom</option>
+              <option value="Dining">Dining</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Item Name</label>
+            <input type="text" id="itemName" placeholder="e.g. TV Cabinet">
+          </div>
+        </div>
+        <button id="addItemBtn" class="btn-primary" style="margin-top:16px;">Add Item + Place Marker</button>
+      </section>
+
+      <section class="card">
+        <h2>3. Checklist</h2>
+        <div id="checklistItems">
+          <p class="hint">No items yet. Add your first item above.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== LOAN CALCULATOR ==================== -->
+    <div id="loan" class="section">
+      <header>
+        <h1>Loan Calculator</h1>
+        <p class="subtitle">Calculate monthly repayment for renovation or housing loan</p>
+      </header>
+
+      <section class="card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Loan Amount (RM)</label>
+            <input type="number" id="loanAmount" value="300000" step="1000">
+          </div>
+          <div class="form-group">
+            <label>Interest Rate (% per year)</label>
+            <input type="number" id="interestRate" value="4.2" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>Loan Tenure (Years)</label>
+            <input type="number" id="loanYears" value="30" min="1" max="35">
+          </div>
+        </div>
+        <button id="calcLoanBtn" class="btn-primary" style="margin-top:20px;">Calculate Monthly Payment</button>
+      </section>
+
+      <section class="card result-card" id="loanResult" style="display:none;">
+        <h2>Loan Result</h2>
+        <div class="total-range">
+          <div class="range-box">
+            <span class="label">Monthly Payment</span>
+            <span class="amount" id="monthlyPayment">RM 0</span>
+          </div>
+        </div>
+        <div class="breakdown" style="margin-top:20px;">
+          <p><strong>Total Payment:</strong> <span id="totalPayment">RM 0</span></p>
+          <p><strong>Total Interest:</strong> <span id="totalInterest">RM 0</span></p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== RENTAL YIELD ==================== -->
+    <div id="rental" class="section">
+      <header>
+        <h1>Rental Yield Calculator</h1>
+        <p class="subtitle">After maintenance fee & sinking fund</p>
+      </header>
+
+      <section class="card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Property Price (RM)</label>
+            <input type="number" id="propertyPrice" value="550000" step="10000">
+          </div>
+          <div class="form-group">
+            <label>Expected Monthly Rent (RM)</label>
+            <input type="number" id="monthlyRent" value="2200" step="100">
+          </div>
+          <div class="form-group">
+            <label>Monthly Maintenance Fee (RM)</label>
+            <input type="number" id="maintenanceFee" value="250" step="50">
+          </div>
+          <div class="form-group">
+            <label>Monthly Sinking Fund (RM)</label>
+            <input type="number" id="sinkingFund" value="50" step="10">
+          </div>
+        </div>
+        <button id="calcYieldBtn" class="btn-primary" style="margin-top:20px;">Calculate Rental Yield</button>
+      </section>
+
+      <section class="card result-card" id="yieldResult" style="display:none;">
+        <h2>Rental Yield Result</h2>
+        <div class="total-range">
+          <div class="range-box">
+            <span class="label">Net Rental Yield</span>
+            <span class="amount" id="netYield">0%</span>
+          </div>
+        </div>
+        <div class="breakdown" style="margin-top:20px;">
+          <p><strong>Annual Gross Rent:</strong> <span id="grossRent">RM 0</span></p>
+          <p><strong>Annual Maintenance + Sinking:</strong> <span id="annualCost">RM 0</span></p>
+          <p><strong>Annual Net Income:</strong> <span id="netIncome">RM 0</span></p>
+          <p style="margin-top:12px;color:#666;font-size:0.9rem;">
+            Good yield is usually 3.5% – 5% after expenses for condos.
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
