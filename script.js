@@ -1,23 +1,23 @@
-// ====================== CALCULATOR DATA ======================
+// ====================== DATA ======================
 const costData = {
-  hacking: { name: "Hacking & Disposal", none: [0,0], light: [1500,3000], moderate: [3000,5500], extensive: [5500,9000],
-    desc: { none:"", light:"Remove some tiles, cabinets or minor partitions only", moderate:"Hack kitchen + 1-2 bathrooms + some flooring", extensive:"Full unit hacking (most walls, all wet areas, old flooring)" } },
-  masonry: { name: "Masonry / Tiling & Waterproofing", none: [0,0], light: [3000,6000], moderate: [6000,12000], extensive: [12000,20000],
-    desc: { none:"", light:"Touch-up tiling or small area only", moderate:"Kitchen + bathrooms full tiling + waterproofing", extensive:"Whole house tiling + full waterproofing" } },
-  carpentry: { name: "Carpentry (Kitchen + Wardrobes + Storage)", none: [0,0], light: [8000,15000], moderate: [15000,25000], extensive: [25000,40000],
-    desc: { none:"", light:"Basic kitchen cabinets + 1 wardrobe only", moderate:"Full kitchen + 2-3 wardrobes + TV console", extensive:"Full custom carpentry throughout the house" } },
-  electrical: { name: "Electrical & Lighting", none: [0,0], light: [2000,4000], moderate: [4000,7000], extensive: [7000,12000],
-    desc: { none:"", light:"Add some power points & basic lighting changes", moderate:"Partial rewiring + new lighting points", extensive:"Full rewiring of the unit" } },
-  plumbing: { name: "Plumbing", none: [0,0], light: [1500,3500], moderate: [3500,6000], extensive: [6000,10000],
-    desc: { none:"", light:"Minor pipe changes", moderate:"Kitchen + bathroom plumbing overhaul", extensive:"Full unit re-piping" } },
-  painting: { name: "Painting", none: [0,0], light: [1200,2500], moderate: [2500,4000], extensive: [4000,6500],
-    desc: { none:"", light:"Touch-up or 1-2 rooms only", moderate:"Whole house standard paint", extensive:"Whole house + feature walls" } },
-  ceiling: { name: "Ceiling / Partition / False Ceiling", none: [0,0], light: [1000,2500], moderate: [2500,5000], extensive: [5000,9000],
-    desc: { none:"", light:"Simple cornice or small area", moderate:"False ceiling in living + some rooms", extensive:"Full false ceiling + partitions" } },
-  windows: { name: "Windows / Doors / Grilles", none: [0,0], light: [1500,3500], moderate: [3500,6000], extensive: [6000,10000],
-    desc: { none:"", light:"Replace 1-2 doors or add grilles", moderate:"New main door + several internal doors", extensive:"Full set of windows / doors / grilles" } },
-  cleaning: { name: "Final Cleaning & Disposal", none: [0,0], light: [400,800], moderate: [800,1500], extensive: [1500,2500],
-    desc: { none:"", light:"Basic post-reno cleaning", moderate:"Standard full cleaning", extensive:"Deep cleaning + extra disposal" } }
+  hacking: { name: "Hacking & Disposal", none:[0,0], light:[1500,3000], moderate:[3000,5500], extensive:[5500,9000],
+    desc:{none:"", light:"Remove some tiles, cabinets or minor partitions only", moderate:"Hack kitchen + 1-2 bathrooms + some flooring", extensive:"Full unit hacking (most walls, all wet areas, old flooring)"} },
+  masonry: { name: "Masonry / Tiling & Waterproofing", none:[0,0], light:[3000,6000], moderate:[6000,12000], extensive:[12000,20000],
+    desc:{none:"", light:"Touch-up tiling or small area only", moderate:"Kitchen + bathrooms full tiling + waterproofing", extensive:"Whole house tiling + full waterproofing"} },
+  carpentry: { name: "Carpentry (Kitchen + Wardrobes + Storage)", none:[0,0], light:[8000,15000], moderate:[15000,25000], extensive:[25000,40000],
+    desc:{none:"", light:"Basic kitchen cabinets + 1 wardrobe only", moderate:"Full kitchen + 2-3 wardrobes + TV console", extensive:"Full custom carpentry throughout the house"} },
+  electrical: { name: "Electrical & Lighting", none:[0,0], light:[2000,4000], moderate:[4000,7000], extensive:[7000,12000],
+    desc:{none:"", light:"Add some power points & basic lighting", moderate:"Partial rewiring + new lighting points", extensive:"Full rewiring of the unit"} },
+  plumbing: { name: "Plumbing", none:[0,0], light:[1500,3500], moderate:[3500,6000], extensive:[6000,10000],
+    desc:{none:"", light:"Minor pipe changes", moderate:"Kitchen + bathroom plumbing overhaul", extensive:"Full unit re-piping"} },
+  painting: { name: "Painting", none:[0,0], light:[1200,2500], moderate:[2500,4000], extensive:[4000,6500],
+    desc:{none:"", light:"Touch-up or 1-2 rooms only", moderate:"Whole house standard paint", extensive:"Whole house + feature walls"} },
+  ceiling: { name: "Ceiling / Partition / False Ceiling", none:[0,0], light:[1000,2500], moderate:[2500,5000], extensive:[5000,9000],
+    desc:{none:"", light:"Simple cornice or small area", moderate:"False ceiling in living + some rooms", extensive:"Full false ceiling + partitions"} },
+  windows: { name: "Windows / Doors / Grilles", none:[0,0], light:[1500,3500], moderate:[3500,6000], extensive:[6000,10000],
+    desc:{none:"", light:"Replace 1-2 doors or add grilles", moderate:"New main door + several internal doors", extensive:"Full set of windows / doors / grilles"} },
+  cleaning: { name: "Final Cleaning & Disposal", none:[0,0], light:[400,800], moderate:[800,1500], extensive:[1500,2500],
+    desc:{none:"", light:"Basic post-reno cleaning", moderate:"Standard full cleaning", extensive:"Deep cleaning + extra disposal"} }
 };
 
 const propertyMultiplier = {
@@ -37,7 +37,18 @@ document.querySelectorAll('.menu-btn').forEach(btn => {
   });
 });
 
-// ====================== CALCULATOR ======================
+// ====================== HELPERS ======================
+function formatMoney(num) {
+  return "RM " + Math.round(num).toLocaleString("en-MY");
+}
+
+function getAreaInSqft() {
+  let area = parseFloat(document.getElementById("floorArea").value) || 1000;
+  if (document.getElementById("areaUnit").value === "sqm") area *= 10.7639;
+  return area;
+}
+
+// ====================== RENOVATION CALCULATOR ======================
 function renderCategories() {
   const container = document.getElementById("categories");
   if (!container) return;
@@ -60,31 +71,21 @@ function renderCategories() {
     `;
     container.appendChild(div);
     const select = div.querySelector("select");
-    select.addEventListener("change", function() { updateDescription(key, this.value); });
+    select.addEventListener("change", () => updateDescription(key, select.value));
     updateDescription(key, "moderate");
   });
 }
 
 function updateDescription(key, intensity) {
-  const descEl = document.getElementById(`desc-${key}`);
-  if (!descEl) return;
+  const el = document.getElementById(`desc-${key}`);
+  if (!el) return;
   const text = costData[key].desc[intensity] || "";
   if (text) {
-    descEl.textContent = text;
-    descEl.classList.add("show");
+    el.textContent = text;
+    el.classList.add("show");
   } else {
-    descEl.classList.remove("show");
+    el.classList.remove("show");
   }
-}
-
-function formatMoney(num) {
-  return "RM " + Math.round(num).toLocaleString("en-MY");
-}
-
-function getAreaInSqft() {
-  let area = parseFloat(document.getElementById("floorArea").value) || 1000;
-  if (document.getElementById("areaUnit").value === "sqm") area *= 10.7639;
-  return area;
 }
 
 function calculate() {
@@ -103,7 +104,11 @@ function calculate() {
     totalLow += low;
     totalHigh += high;
     if (intensity !== "none") {
-      breakdown.push({ name: costData[key].name, intensity: intensity.charAt(0).toUpperCase() + intensity.slice(1), low, high });
+      breakdown.push({
+        name: costData[key].name,
+        intensity: intensity.charAt(0).toUpperCase() + intensity.slice(1),
+        low, high
+      });
     }
   });
 
@@ -125,7 +130,7 @@ function calculate() {
   document.getElementById("resultSection").style.display = "block";
 }
 
-// ====================== CHECKLIST + LOCAL STORAGE ======================
+// ====================== CHECKLIST ======================
 let items = JSON.parse(localStorage.getItem("renoChecklist") || "[]");
 let waitingForClick = false;
 let tempItem = null;
@@ -147,12 +152,11 @@ document.getElementById("planUpload")?.addEventListener("change", function(e) {
   reader.readAsDataURL(file);
 });
 
-// Load saved image
 window.addEventListener("load", () => {
-  const savedImage = localStorage.getItem("renoPlanImage");
-  if (savedImage) {
+  const saved = localStorage.getItem("renoPlanImage");
+  if (saved) {
     const img = document.getElementById("planImage");
-    img.src = savedImage;
+    img.src = saved;
     img.style.display = "block";
   }
   renderMarkers();
@@ -189,12 +193,12 @@ function renderMarkers() {
   if (!container) return;
   container.innerHTML = "";
   items.forEach(item => {
-    const marker = document.createElement("div");
-    marker.className = "marker" + (item.done ? " done" : "");
-    marker.style.left = item.x + "%";
-    marker.style.top = item.y + "%";
-    marker.innerHTML = `<div class="marker-label">${item.name}</div>`;
-    container.appendChild(marker);
+    const m = document.createElement("div");
+    m.className = "marker" + (item.done ? " done" : "");
+    m.style.left = item.x + "%";
+    m.style.top = item.y + "%";
+    m.innerHTML = `<div class="marker-label">${item.name}</div>`;
+    container.appendChild(m);
   });
 }
 
@@ -202,7 +206,7 @@ function renderChecklist() {
   const container = document.getElementById("checklistItems");
   if (!container) return;
   if (items.length === 0) {
-    container.innerHTML = `<p class="hint">No items yet. Add your first item above.</p>`;
+    container.innerHTML = `<p class="hint">No items yet.</p>`;
     return;
   }
   container.innerHTML = "";
@@ -232,90 +236,40 @@ function renderChecklist() {
   });
 }
 
-// ====================== LOAN CALCULATOR ======================
-document.getElementById("calcLoanBtn")?.addEventListener("click", function() {
-  const P = parseFloat(document.getElementById("loanAmount").value);
-  const annualRate = parseFloat(document.getElementById("interestRate").value) / 100;
-  const years = parseFloat(document.getElementById("loanYears").value);
-  const r = annualRate / 12;
-  const n = years * 12;
-
-  const monthly = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
-  const totalPay = monthly * n;
-  const totalInterest = totalPay - P;
-
-  document.getElementById("monthlyPayment").textContent = formatMoney(monthly);
-  document.getElementById("totalPayment").textContent = formatMoney(totalPay);
-  document.getElementById("totalInterest").textContent = formatMoney(totalInterest);
-  document.getElementById("loanResult").style.display = "block";
-});
-
-// ====================== RENTAL YIELD ======================
-document.getElementById("calcYieldBtn")?.addEventListener("click", function() {
-  const price = parseFloat(document.getElementById("propertyPrice").value);
-  const rent = parseFloat(document.getElementById("monthlyRent").value);
-  const maint = parseFloat(document.getElementById("maintenanceFee").value);
-  const sinking = parseFloat(document.getElementById("sinkingFund").value);
-
-  const annualGross = rent * 12;
-  const annualCost = (maint + sinking) * 12;
-  const annualNet = annualGross - annualCost;
-  const yieldPercent = (annualNet / price) * 100;
-
-  document.getElementById("grossRent").textContent = formatMoney(annualGross);
-  document.getElementById("annualCost").textContent = formatMoney(annualCost);
-  document.getElementById("netIncome").textContent = formatMoney(annualNet);
-  document.getElementById("netYield").textContent = yieldPercent.toFixed(2) + "%";
-  document.getElementById("yieldResult").style.display = "block";
-});
-
-// ====================== INIT ======================
-document.addEventListener("DOMContentLoaded", () => {
-  renderCategories();
-  document.getElementById("calculateBtn")?.addEventListener("click", calculate);
-  renderMarkers();
-  renderChecklist();
-});
-// ====================== COMMITMENTS ======================
+// ====================== LOAN & DSR ======================
 let commitments = [
   { id: 1, name: "Car Loan", amount: 0 },
   { id: 2, name: "Personal Loan", amount: 0 },
-  { id: 3, name: "PTPTN / Education", amount: 0 }
+  { id: 3, name: "PTPTN", amount: 0 }
 ];
 
 function renderCommitments() {
   const container = document.getElementById("commitmentsList");
   if (!container) return;
   container.innerHTML = "";
-
   commitments.forEach(c => {
     const row = document.createElement("div");
     row.className = "commitment-row";
     row.innerHTML = `
-      <input type="text" value="${c.name}" data-id="${c.id}" class="commit-name" placeholder="e.g. Car Loan">
-      <input type="number" value="${c.amount}" data-id="${c.id}" class="commit-amount" placeholder="RM" min="0">
+      <input type="text" value="${c.name}" class="commit-name" data-id="${c.id}">
+      <input type="number" value="${c.amount}" class="commit-amount" data-id="${c.id}" min="0">
       <button type="button" class="remove-commit" data-id="${c.id}">×</button>
     `;
     container.appendChild(row);
   });
 
-  // Name change
-  container.querySelectorAll(".commit-name").forEach(input => {
-    input.addEventListener("change", function() {
+  container.querySelectorAll(".commit-name").forEach(inp => {
+    inp.addEventListener("change", function() {
       const item = commitments.find(c => c.id === Number(this.dataset.id));
       if (item) item.name = this.value;
     });
   });
-
-  // Amount change
-  container.querySelectorAll(".commit-amount").forEach(input => {
-    input.addEventListener("input", function() {
+  container.querySelectorAll(".commit-amount").forEach(inp => {
+    inp.addEventListener("input", function() {
       const item = commitments.find(c => c.id === Number(this.dataset.id));
       if (item) item.amount = parseFloat(this.value) || 0;
     });
   });
-
-  // Remove
   container.querySelectorAll(".remove-commit").forEach(btn => {
     btn.addEventListener("click", function() {
       commitments = commitments.filter(c => c.id !== Number(this.dataset.id));
@@ -325,23 +279,16 @@ function renderCommitments() {
 }
 
 document.getElementById("addCommitBtn")?.addEventListener("click", () => {
-  commitments.push({
-    id: Date.now(),
-    name: "Other Loan",
-    amount: 0
-  });
+  commitments.push({ id: Date.now(), name: "Other Loan", amount: 0 });
   renderCommitments();
 });
 
-// ====================== LOAN + AFFORDABILITY ======================
 document.getElementById("calcLoanBtn")?.addEventListener("click", function() {
   const salary = parseFloat(document.getElementById("monthlySalary").value) || 0;
-  const otherIncome = parseFloat(document.getElementById("otherIncome").value) || 0;
-  const totalIncome = salary + otherIncome;
+  const other = parseFloat(document.getElementById("otherIncome").value) || 0;
+  const totalIncome = salary + other;
+  const totalCommit = commitments.reduce((s, c) => s + (c.amount || 0), 0);
 
-  const totalCommitment = commitments.reduce((sum, c) => sum + (c.amount || 0), 0);
-
-  // Loan calculation
   const P = parseFloat(document.getElementById("loanAmount").value) || 0;
   const annualRate = parseFloat(document.getElementById("interestRate").value) / 100 || 0;
   const years = parseFloat(document.getElementById("loanYears").value) || 30;
@@ -358,34 +305,112 @@ document.getElementById("calcLoanBtn")?.addEventListener("click", function() {
   const totalPay = monthly * n;
   const totalInterest = totalPay - P;
 
-  // Affordability (based on your rules)
-  const maxHousePrice = totalIncome * 0.60 * 200;          // rough annualised feel, or adjust
-  // Better interpretation of your rules:
-  const suggestedLoanLimit = totalIncome * 0.30 * 200;     // common bank DSR style rough estimate
-  const totalAffordable = totalIncome * 0.35 * 200;
-  const cashNeeded = (suggestedLoanLimit / 0.7) * 0.30;    // assume 70% loan, 30% cash
-
-  // Cleaner version matching your description more closely
-  const capabilityBuy = totalIncome * 60;                  // monthly × 60 (rough yearly capacity feel)
-  const houseLoanLimit = totalIncome * 0.30;               // monthly loan limit
-  const totalLimit = totalIncome * 0.35;                   // monthly total obligation limit
-  const advisedCash = (document.getElementById("loanAmount").value * 0.30) || 0;
+  // DSR
+  const dsr = totalIncome > 0 ? ((totalCommit + monthly) / totalIncome) * 100 : 0;
 
   // Display
   document.getElementById("monthlyPayment").textContent = formatMoney(monthly);
   document.getElementById("totalPayment").textContent = formatMoney(totalPay);
   document.getElementById("totalInterest").textContent = formatMoney(totalInterest);
 
-  document.getElementById("AdvisedHousePrice").textContent = formatMoney(totalIncome * 60);      // salary × 60
-  document.getElementById("loanLimit").textContent = formatMoney(totalIncome * 0.30);       // salary × 0.3 (monthly)
-  document.getElementById("totalLimit").textContent = formatMoney(totalIncome * 0.35);      // salary × 0.35
-  document.getElementById("cashNeeded").textContent = formatMoney(P * 0.30);                // 30% of loan/house price
+  const dsrBox = document.getElementById("dsrBox");
+  const dsrValue = document.getElementById("dsrValue");
+  const dsrStatus = document.getElementById("dsrStatus");
+  dsrValue.textContent = dsr.toFixed(1) + "%";
+
+  dsrBox.classList.remove("excellent", "good", "risk");
+  if (dsr <= 60) {
+    dsrBox.classList.add("excellent");
+    dsrStatus.textContent = "Excellent (High approval chance)";
+  } else if (dsr <= 70) {
+    dsrBox.classList.add("good");
+    dsrStatus.textContent = "Acceptable / Borderline";
+  } else {
+    dsrBox.classList.add("risk");
+    dsrStatus.textContent = "High Risk (May need joint applicant)";
+  }
+
+  // Your original multipliers
+  document.getElementById("maxHousePrice").textContent = formatMoney(totalIncome * 60);
+  document.getElementById("loanLimit").textContent = formatMoney(totalIncome * 0.30);
+  document.getElementById("totalLimit").textContent = formatMoney(totalIncome * 0.35);
+  document.getElementById("cashNeeded").textContent = formatMoney(P * 0.30);
 
   document.getElementById("loanResult").style.display = "block";
-  document.getElementById("loanResult").scrollIntoView({ behavior: "smooth" });
 });
 
-// Init commitments when page loads
+// ====================== ENTRY COST ======================
+document.getElementById("calcEntryBtn")?.addEventListener("click", function() {
+  const price = parseFloat(document.getElementById("entryPrice").value) || 0;
+  const downPct = parseFloat(document.getElementById("downPercent").value) || 10;
+  const loan = parseFloat(document.getElementById("entryLoan").value) || 0;
+
+  const downPayment = price * (downPct / 100);
+
+  // Stamp Duty (MOT) - Malaysian citizen/PR tiers
+  let stampDuty = 0;
+  if (price <= 100000) {
+    stampDuty = price * 0.01;
+  } else if (price <= 500000) {
+    stampDuty = 1000 + (price - 100000) * 0.02;
+  } else if (price <= 1000000) {
+    stampDuty = 9000 + (price - 500000) * 0.03;
+  } else {
+    stampDuty = 24000 + (price - 1000000) * 0.04;
+  }
+
+  const loanStamp = loan * 0.005;               // 0.5%
+  const legalFee = price * 0.012;               // rough 1.2%
+  const valuation = Math.min(Math.max(price * 0.002, 800), 2500); // rough
+
+  const total = downPayment + stampDuty + loanStamp + legalFee + valuation;
+
+  document.getElementById("totalCash").textContent = formatMoney(total);
+
+  const tbody = document.getElementById("entryBreakdown");
+  tbody.innerHTML = `
+    <tr><td>Down Payment (${downPct}%)</td><td>${formatMoney(downPayment)}</td></tr>
+    <tr><td>Stamp Duty (MOT)</td><td>${formatMoney(stampDuty)}</td></tr>
+    <tr><td>Loan Agreement Stamp Duty (0.5%)</td><td>${formatMoney(loanStamp)}</td></tr>
+    <tr><td>Legal Fees (estimate)</td><td>${formatMoney(legalFee)}</td></tr>
+    <tr><td>Valuation Fee (estimate)</td><td>${formatMoney(valuation)}</td></tr>
+    <tr style="font-weight:700;"><td>Total Upfront Cash</td><td>${formatMoney(total)}</td></tr>
+  `;
+
+  document.getElementById("entryResult").style.display = "block";
+});
+
+// ====================== RENTAL YIELD ======================
+document.getElementById("calcYieldBtn")?.addEventListener("click", function() {
+  const price = parseFloat(document.getElementById("rentalPrice").value) || 0;
+  const rent = parseFloat(document.getElementById("monthlyRent").value) || 0;
+  const maint = parseFloat(document.getElementById("maintFee").value) || 0;
+  const sinking = parseFloat(document.getElementById("sinkingFund").value) || 0;
+  const assessment = parseFloat(document.getElementById("assessmentTax").value) || 0;
+  const quit = parseFloat(document.getElementById("quitRent").value) || 0;
+  const insurance = parseFloat(document.getElementById("insurance").value) || 0;
+  const loanInst = parseFloat(document.getElementById("rentalLoan").value) || 0;
+
+  const annualGross = rent * 12;
+  const annualExpenses = (maint + sinking) * 12 + assessment + quit + insurance;
+  const annualNet = annualGross - annualExpenses;
+  const yieldPct = price > 0 ? (annualNet / price) * 100 : 0;
+  const netCashFlow = rent - maint - sinking - loanInst;
+
+  document.getElementById("grossRent").textContent = formatMoney(annualGross);
+  document.getElementById("annualExpenses").textContent = formatMoney(annualExpenses);
+  document.getElementById("netIncome").textContent = formatMoney(annualNet);
+  document.getElementById("netYield").textContent = yieldPct.toFixed(2) + "%";
+  document.getElementById("netCashFlow").textContent = formatMoney(netCashFlow);
+
+  document.getElementById("yieldResult").style.display = "block";
+});
+
+// ====================== INIT ======================
 document.addEventListener("DOMContentLoaded", () => {
+  renderCategories();
   renderCommitments();
+  document.getElementById("calculateBtn")?.addEventListener("click", calculate);
+  renderMarkers();
+  renderChecklist();
 });

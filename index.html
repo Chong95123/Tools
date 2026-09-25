@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Renovation Tools</title>
+  <title>Renovation & Property Tools</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -11,13 +11,14 @@
   <div class="container">
     <!-- Menu -->
     <nav class="main-menu">
-      <button class="menu-btn active" data-target="calculator">Reno Calculator</button>
+      <button class="menu-btn active" data-target="calculator">Calculator</button>
       <button class="menu-btn" data-target="checklist">Layout Checklist</button>
-      <button class="menu-btn" data-target="loan">Loan Calculator</button>
+      <button class="menu-btn" data-target="loan">Loan & DSR</button>
+      <button class="menu-btn" data-target="entry">Entry Cost</button>
       <button class="menu-btn" data-target="rental">Rental Yield</button>
     </nav>
 
-    <!-- ==================== CALCULATOR ==================== -->
+    <!-- ==================== RENOVATION CALCULATOR ==================== -->
     <div id="calculator" class="section active">
       <header>
         <h1>Renovation Cost Calculator</h1>
@@ -30,6 +31,8 @@
           <div class="form-group">
             <label>Property Type</label>
             <select id="propertyType">
+              <option value="apartment-new">Apartment / Flat (New)</option>
+              <option value="apartment-resale" selected>Apartment / Flat (Resale)</option>
               <option value="condo-new">Condo (New)</option>
               <option value="condo-resale">Condo (Resale)</option>
             </select>
@@ -68,7 +71,7 @@
 
       <section class="card">
         <h2>2. Select Work Scope</h2>
-        <p class="hint">Choose the intensity. Description will appear below after you select.</p>
+        <p class="hint">Choose the intensity. Description appears below after selection.</p>
         <div class="categories" id="categories"></div>
       </section>
 
@@ -76,7 +79,7 @@
         <button id="calculateBtn" class="btn-primary">Calculate Estimate (RM)</button>
       </div>
 
-      <section class="card result-card" id="resultSection" style="display: none;">
+      <section class="card result-card" id="resultSection" style="display:none;">
         <h2>Your Estimated Renovation Cost</h2>
         <div class="total-range">
           <div class="range-box">
@@ -98,28 +101,13 @@
             <tbody id="breakdownBody"></tbody>
           </table>
         </div>
-        <div class="notes">
-          <h3>What's Usually Included</h3>
-          <ul>
-            <li>Labour + standard materials for the selected level</li>
-            <li>Basic debris disposal</li>
-            <li>Standard hardware</li>
-          </ul>
-          <h3>What's Usually Not Included</h3>
-          <ul>
-            <li>Appliances, lighting, sanitary ware</li>
-            <li>Design / ID fees</li>
-            <li>Permit fees & deposits</li>
-            <li>Common area / facilities works</li>
-          </ul>
-          <div class="disclaimer">
-            <strong>Disclaimer:</strong> This is a pre-site visit estimate only. Final quotation may differ by 15–30%.
-          </div>
+        <div class="disclaimer">
+          <strong>Disclaimer:</strong> Pre-site visit estimate only. Actual quotation may vary by ±15–30% based on material selection and site conditions.
         </div>
       </section>
     </div>
 
-    <!-- ==================== CHECKLIST ==================== -->
+    <!-- ==================== LAYOUT CHECKLIST ==================== -->
     <div id="checklist" class="section">
       <header>
         <h1>Layout Checklist</h1>
@@ -166,128 +154,192 @@
       <section class="card">
         <h2>3. Checklist</h2>
         <div id="checklistItems">
-          <p class="hint">No items yet. Add your first item above.</p>
+          <p class="hint">No items yet.</p>
         </div>
       </section>
     </div>
 
-    <!-- ==================== LOAN CALCULATOR ==================== -->
-<div id="loan" class="section">
-  <header>
-    <h1>Loan & Affordability Calculator</h1>
-    <p class="subtitle">Monthly payment + how much house you can afford based on salary</p>
-  </header>
-
-  <section class="card">
-    <h2>1. Your Income & Commitments</h2>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Monthly Salary (RM)</label>
-        <input type="number" id="monthlySalary" value="5000" step="100">
-      </div>
-      <div class="form-group">
-        <label>Other Monthly Income (optional)</label>
-        <input type="number" id="otherIncome" value="0" step="100">
-      </div>
-    </div>
-
-    <h3 style="margin: 20px 0 12px; font-size: 1rem;">Monthly Commitments</h3>
-    <div id="commitmentsList">
-      <!-- commitment rows will be added here -->
-    </div>
-    <button type="button" id="addCommitBtn" class="btn-primary" style="margin-top:12px; max-width:220px; background:#64748b;">
-      + Add Commitment
-    </button>
-  </section>
-
-  <section class="card">
-    <h2>2. Loan Details</h2>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Loan Amount (RM)</label>
-        <input type="number" id="loanAmount" value="300000" step="1000">
-      </div>
-      <div class="form-group">
-        <label>Interest Rate (% per year)</label>
-        <input type="number" id="interestRate" value="4.2" step="0.1">
-      </div>
-      <div class="form-group">
-        <label>Loan Tenure (Years)</label>
-        <input type="number" id="loanYears" value="30" min="1" max="35">
-      </div>
-    </div>
-    <button id="calcLoanBtn" class="btn-primary" style="margin-top:20px;">Calculate Everything</button>
-  </section>
-
-  <section class="card result-card" id="loanResult" style="display:none;">
-    <h2>Results</h2>
-
-    <div class="total-range">
-      <div class="range-box">
-        <span class="label">Estimated Monthly Loan Payment</span>
-        <span class="amount" id="monthlyPayment">RM 0</span>
-      </div>
-    </div>
-
-    <div class="breakdown" style="margin-bottom:20px;">
-      <p><strong>Total Payment:</strong> <span id="totalPayment">RM 0</span></p>
-      <p><strong>Total Interest:</strong> <span id="totalInterest">RM 0</span></p>
-    </div>
-
-    <h3 style="margin-bottom:12px;">Affordability Based on Your Salary</h3>
-    <div class="afford-grid">
-      <div class="afford-box">
-        <div class="label">Advised House Price (Salary × 60%)</div>
-        <div class="value" id="AdvisedHousePrice">RM 0</div>
-      </div>
-      <div class="afford-box">
-        <div class="label">Suggested Loan Limit (Salary × 30%)</div>
-        <div class="value" id="loanLimit">RM 0</div>
-      </div>
-      <div class="afford-box">
-        <div class="label">Total Affordable Limit (Salary × 35%)</div>
-        <div class="value" id="totalLimit">RM 0</div>
-      </div>
-      <div class="afford-box">
-        <div class="label">Cash Needed (~30% of House Price)</div>
-        <div class="value" id="cashNeeded">RM 0</div>
-      </div>
-    </div>
-
-    <div class="disclaimer" style="margin-top:20px;">
-      <strong>Note:</strong> These are general guidelines only. Actual bank approval depends on credit score, employment type, and bank policy. 
-      Cash needed usually covers down payment, legal fees, insurance, stamp duty and basic renovation.
-    </div>
-  </section>
-</div>
-
-    <!-- ==================== RENTAL YIELD ==================== -->
-    <div id="rental" class="section">
+    <!-- ==================== LOAN & DSR ==================== -->
+    <div id="loan" class="section">
       <header>
-        <h1>Rental Yield Calculator</h1>
-        <p class="subtitle">After maintenance fee & sinking fund</p>
+        <h1>Loan & Affordability Calculator</h1>
+        <p class="subtitle">Monthly payment + DSR + how much you can afford</p>
+      </header>
+
+      <section class="card">
+        <h2>1. Income & Commitments</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Monthly Salary (RM)</label>
+            <input type="number" id="monthlySalary" value="6000" step="100">
+          </div>
+          <div class="form-group">
+            <label>Other Monthly Income (RM)</label>
+            <input type="number" id="otherIncome" value="0" step="100">
+          </div>
+        </div>
+
+        <h3 style="margin:18px 0 10px;font-size:1rem;">Monthly Commitments</h3>
+        <div id="commitmentsList"></div>
+        <button type="button" id="addCommitBtn" class="btn-secondary" style="margin-top:12px;">+ Add Commitment</button>
+      </section>
+
+      <section class="card">
+        <h2>2. Loan Details</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Loan Amount (RM)</label>
+            <input type="number" id="loanAmount" value="400000" step="10000">
+          </div>
+          <div class="form-group">
+            <label>Interest Rate (% p.a.)</label>
+            <input type="number" id="interestRate" value="4.2" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>Loan Tenure (Years)</label>
+            <input type="number" id="loanYears" value="30" min="1" max="35">
+          </div>
+        </div>
+        <button id="calcLoanBtn" class="btn-primary" style="margin-top:20px;">Calculate Loan & DSR</button>
+      </section>
+
+      <section class="card result-card" id="loanResult" style="display:none;">
+        <h2>Results</h2>
+
+        <div class="total-range">
+          <div class="range-box">
+            <span class="label">Monthly Loan Payment</span>
+            <span class="amount" id="monthlyPayment">RM 0</span>
+          </div>
+        </div>
+
+        <div class="breakdown">
+          <p><strong>Total Payment:</strong> <span id="totalPayment">RM 0</span></p>
+          <p><strong>Total Interest:</strong> <span id="totalInterest">RM 0</span></p>
+        </div>
+
+        <h3 style="margin:20px 0 12px;">Debt Service Ratio (DSR)</h3>
+        <div class="dsr-box" id="dsrBox">
+          <div class="dsr-value" id="dsrValue">0%</div>
+          <div class="dsr-status" id="dsrStatus">-</div>
+        </div>
+
+        <h3 style="margin:24px 0 12px;">Affordability Guide (based on your income)</h3>
+        <div class="afford-grid">
+          <div class="afford-box">
+            <div class="label">Capability to Buy House<br>(Salary × 60)</div>
+            <div class="value" id="maxHousePrice">RM 0</div>
+          </div>
+          <div class="afford-box">
+            <div class="label">House Loan Limit<br>(Salary × 0.30)</div>
+            <div class="value" id="loanLimit">RM 0</div>
+          </div>
+          <div class="afford-box">
+            <div class="label">Total Limit You Can Afford<br>(Salary × 0.35)</div>
+            <div class="value" id="totalLimit">RM 0</div>
+          </div>
+          <div class="afford-box">
+            <div class="label">Cash to Prepare<br>(≈ 30% of Loan/House)</div>
+            <div class="value" id="cashNeeded">RM 0</div>
+          </div>
+        </div>
+
+        <div class="disclaimer" style="margin-top:20px;">
+          <strong>Important Notice:</strong> DSR thresholds and affordability figures are general guides only. 
+          Each bank has its own internal policy. Actual approval depends on credit score, employment type, and bank assessment. 
+          This tool does not guarantee loan approval.
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== ENTRY COST ==================== -->
+    <div id="entry" class="section">
+      <header>
+        <h1>Entry Cost / Upfront Cash</h1>
+        <p class="subtitle">Estimate how much cash you need before getting the keys</p>
       </header>
 
       <section class="card">
         <div class="form-grid">
           <div class="form-group">
             <label>Property Price (RM)</label>
-            <input type="number" id="propertyPrice" value="550000" step="10000">
+            <input type="number" id="entryPrice" value="500000" step="10000">
           </div>
           <div class="form-group">
-            <label>Expected Monthly Rent (RM)</label>
-            <input type="number" id="monthlyRent" value="2200" step="100">
+            <label>Down Payment (%)</label>
+            <input type="number" id="downPercent" value="10" min="10" max="30" step="5">
+          </div>
+          <div class="form-group">
+            <label>Loan Amount (RM)</label>
+            <input type="number" id="entryLoan" value="450000" step="10000">
+          </div>
+        </div>
+        <button id="calcEntryBtn" class="btn-primary" style="margin-top:20px;">Calculate Upfront Cost</button>
+      </section>
+
+      <section class="card result-card" id="entryResult" style="display:none;">
+        <h2>Estimated Upfront Cash Needed</h2>
+        <div class="total-range">
+          <div class="range-box">
+            <span class="label">Total Cash Required</span>
+            <span class="amount" id="totalCash">RM 0</span>
+          </div>
+        </div>
+
+        <table style="margin-top:20px;">
+          <tbody id="entryBreakdown"></tbody>
+        </table>
+
+        <div class="disclaimer" style="margin-top:20px;">
+          Stamp duty uses current Malaysian citizen/PR rates. Legal fees are estimates only (actual may vary by lawyer). 
+          First-time buyer exemptions may apply for properties ≤ RM500,000.
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== RENTAL YIELD ==================== -->
+    <div id="rental" class="section">
+      <header>
+        <h1>Rental Yield Calculator</h1>
+        <p class="subtitle">Net yield after all major expenses</p>
+      </header>
+
+      <section class="card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Property Price (RM)</label>
+            <input type="number" id="rentalPrice" value="550000" step="10000">
+          </div>
+          <div class="form-group">
+            <label>Monthly Rent (RM)</label>
+            <input type="number" id="monthlyRent" value="2200" step="50">
           </div>
           <div class="form-group">
             <label>Monthly Maintenance Fee (RM)</label>
-            <input type="number" id="maintenanceFee" value="250" step="50">
+            <input type="number" id="maintFee" value="250" step="10">
           </div>
           <div class="form-group">
             <label>Monthly Sinking Fund (RM)</label>
             <input type="number" id="sinkingFund" value="50" step="10">
           </div>
+          <div class="form-group">
+            <label>Annual Assessment Tax (RM)</label>
+            <input type="number" id="assessmentTax" value="800" step="50">
+          </div>
+          <div class="form-group">
+            <label>Annual Quit Rent (RM)</label>
+            <input type="number" id="quitRent" value="150" step="10">
+          </div>
+          <div class="form-group">
+            <label>Annual Insurance (RM)</label>
+            <input type="number" id="insurance" value="400" step="50">
+          </div>
+          <div class="form-group">
+            <label>Monthly Loan Installment (RM) <small>(optional)</small></label>
+            <input type="number" id="rentalLoan" value="0" step="50">
+          </div>
         </div>
-        <button id="calcYieldBtn" class="btn-primary" style="margin-top:20px;">Calculate Rental Yield</button>
+        <button id="calcYieldBtn" class="btn-primary" style="margin-top:20px;">Calculate Yield</button>
       </section>
 
       <section class="card result-card" id="yieldResult" style="display:none;">
@@ -298,13 +350,16 @@
             <span class="amount" id="netYield">0%</span>
           </div>
         </div>
-        <div class="breakdown" style="margin-top:20px;">
+
+        <div class="breakdown">
           <p><strong>Annual Gross Rent:</strong> <span id="grossRent">RM 0</span></p>
-          <p><strong>Annual Maintenance + Sinking:</strong> <span id="annualCost">RM 0</span></p>
+          <p><strong>Annual Total Expenses:</strong> <span id="annualExpenses">RM 0</span></p>
           <p><strong>Annual Net Income:</strong> <span id="netIncome">RM 0</span></p>
-          <p style="margin-top:12px;color:#666;font-size:0.9rem;">
-            Good yield is usually 3.5% – 5% after expenses for condos.
-          </p>
+          <p style="margin-top:12px;"><strong>Net Monthly Cash Flow:</strong> <span id="netCashFlow">RM 0</span></p>
+        </div>
+
+        <div class="disclaimer" style="margin-top:16px;">
+          Good net yield for condos in Malaysia is generally 3.5% – 5% after expenses.
         </div>
       </section>
     </div>
