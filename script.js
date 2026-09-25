@@ -276,3 +276,116 @@ document.addEventListener("DOMContentLoaded", () => {
   renderMarkers();
   renderChecklist();
 });
+// ====================== COMMITMENTS ======================
+let commitments = [
+  { id: 1, name: "Car Loan", amount: 0 },
+  { id: 2, name: "Personal Loan", amount: 0 },
+  { id: 3, name: "PTPTN / Education", amount: 0 }
+];
+
+function renderCommitments() {
+  const container = document.getElementById("commitmentsList");
+  if (!container) return;
+  container.innerHTML = "";
+
+  commitments.forEach(c => {
+    const row = document.createElement("div");
+    row.className = "commitment-row";
+    row.innerHTML = `
+      <input type="text" value="${c.name}" data-id="${c.id}" class="commit-name" placeholder="e.g. Car Loan">
+      <input type="number" value="${c.amount}" data-id="${c.id}" class="commit-amount" placeholder="RM" min="0">
+      <button type="button" class="remove-commit" data-id="${c.id}">×</button>
+    `;
+    container.appendChild(row);
+  });
+
+  // Name change
+  container.querySelectorAll(".commit-name").forEach(input => {
+    input.addEventListener("change", function() {
+      const item = commitments.find(c => c.id === Number(this.dataset.id));
+      if (item) item.name = this.value;
+    });
+  });
+
+  // Amount change
+  container.querySelectorAll(".commit-amount").forEach(input => {
+    input.addEventListener("input", function() {
+      const item = commitments.find(c => c.id === Number(this.dataset.id));
+      if (item) item.amount = parseFloat(this.value) || 0;
+    });
+  });
+
+  // Remove
+  container.querySelectorAll(".remove-commit").forEach(btn => {
+    btn.addEventListener("click", function() {
+      commitments = commitments.filter(c => c.id !== Number(this.dataset.id));
+      renderCommitments();
+    });
+  });
+}
+
+document.getElementById("addCommitBtn")?.addEventListener("click", () => {
+  commitments.push({
+    id: Date.now(),
+    name: "Other Loan",
+    amount: 0
+  });
+  renderCommitments();
+});
+
+// ====================== LOAN + AFFORDABILITY ======================
+document.getElementById("calcLoanBtn")?.addEventListener("click", function() {
+  const salary = parseFloat(document.getElementById("monthlySalary").value) || 0;
+  const otherIncome = parseFloat(document.getElementById("otherIncome").value) || 0;
+  const totalIncome = salary + otherIncome;
+
+  const totalCommitment = commitments.reduce((sum, c) => sum + (c.amount || 0), 0);
+
+  // Loan calculation
+  const P = parseFloat(document.getElementById("loanAmount").value) || 0;
+  const annualRate = parseFloat(document.getElementById("interestRate").value) / 100 || 0;
+  const years = parseFloat(document.getElementById("loanYears").value) || 30;
+  const r = annualRate / 12;
+  const n = years * 12;
+
+  let monthly = 0;
+  if (r > 0) {
+    monthly = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  } else {
+    monthly = P / n;
+  }
+
+  const totalPay = monthly * n;
+  const totalInterest = totalPay - P;
+
+  // Affordability (based on your rules)
+  const maxHousePrice = totalIncome * 0.60 * 200;          // rough annualised feel, or adjust
+  // Better interpretation of your rules:
+  const suggestedLoanLimit = totalIncome * 0.30 * 200;     // common bank DSR style rough estimate
+  const totalAffordable = totalIncome * 0.35 * 200;
+  const cashNeeded = (suggestedLoanLimit / 0.7) * 0.30;    // assume 70% loan, 30% cash
+
+  // Cleaner version matching your description more closely
+  const capabilityBuy = totalIncome * 60;                  // monthly × 60 (rough yearly capacity feel)
+  const houseLoanLimit = totalIncome * 0.30;               // monthly loan limit
+  const totalLimit = totalIncome * 0.35;                   // monthly total obligation limit
+  const advisedCash = (document.getElementById("loanAmount").value * 0.30) || 0;
+
+  // Display
+  document.getElementById("monthlyPayment").textContent = formatMoney(monthly);
+  document.getElementById("totalPayment").textContent = formatMoney(totalPay);
+  document.getElementById("totalInterest").textContent = formatMoney(totalInterest);
+
+  document.getElementById("AdvisedHousePrice").textContent = formatMoney(totalIncome * 60);      // salary × 60
+  document.getElementById("loanLimit").textContent = formatMoney(totalIncome * 0.30);       // salary × 0.3 (monthly)
+  document.getElementById("totalLimit").textContent = formatMoney(totalIncome * 0.35);      // salary × 0.35
+  document.getElementById("cashNeeded").textContent = formatMoney(P * 0.30);                // 30% of loan/house price
+
+  document.getElementById("loanResult").style.display = "block";
+  document.getElementById("loanResult").scrollIntoView({ behavior: "smooth" });
+});
+
+// Init commitments when page loads
+document.addEventListener("DOMContentLoaded", () => {
+  renderCommitments();
+});
